@@ -4,7 +4,7 @@ import CourseSection
 class Student: 
     def __init__(self, id: int, name: str, base_score: int):
         self.id = id # 8 digit ID
-        self.credit_limit = 18
+        self.credit_limit = 16
         self.base_score = base_score
         self.name = name
         self.section_ranking = []
@@ -18,9 +18,15 @@ class Student:
     
     def __lt__(self, other_student):
         return self.section_score < other_student.section_score
+     
+    def __eq__(self, other_student):
+        return self.section_score == other_student.section_score
+    
+    def __gt__(self, other_student):
+        return self.section_score > other_student.section_score
         
     def insert_section_preference(self, index: int, section: CourseSection):
-        self.section_preferences_ordered.insert(index, section)
+        self.section_ranking.insert(index, section)
             
     def set_section_ranking(self, ranking: list):
         for i, section_id in enumerate(ranking):
@@ -30,6 +36,12 @@ class Student:
     def join_section(self, section: CourseSection):
         self.credits_enrolled += section.credits
         self.schedule.append(section.id)
+        
+    def leave_section(self, section: CourseSection):
+        # this can be optimized to dictionary later, just too lazy right now
+        if section.id in self.schedule:
+            self.schedule.remove(section.id)
+            self.credits_enrolled -= section.credits
         
     def get_top_section_id(self):
         return self.section_ranking[self.next_section_index]
